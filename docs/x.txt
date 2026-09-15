@@ -1,0 +1,22 @@
+/Users/gufran/Developer/Projects/Misc/disability_cslr/models/Pose86K-CSLR-Isharah/annotations_v2 
+
+has data for a dataset
+are there repos/approaches/tools online that can take that data and convert it into an avatar?
+
+
+
+
+
+
+
+so far the sign to text and text to sign has been entirely hardcoded and faked
+
+I need you now to make a backend that does the sign to text using the model in /Users/gufran/Developer/Projects/Misc/disability_cslr/models/MSLR_ICCV2025
+
+and text to sign using whichever one u recommend from the list u gave me above
+
+---------------
+lets start with signworld-app
+replace all instances of hardcoded stuff
+
+but before u do so, make a plan so i can review and give you the go ahead

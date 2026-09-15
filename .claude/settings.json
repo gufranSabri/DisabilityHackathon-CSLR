@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:sdaia.gov.sa)",
+      "Bash(rm -rf /Users/gufran/Developer/Projects/Misc/disability_cslr/signworld-hub/src/assets /Users/gufran/Developer/Projects/Misc/disability_cslr/signworld-hub/public/vite.svg /Users/gufran/Developer/Projects/Misc/disability_cslr/signworld-hub/public/icons.svg /Users/gufran/Developer/Projects/Misc/disability_cslr/signworld-hub/public/favicon.svg)",
+      "Bash(npm install *)",
+      "Bash(python3 /tmp/vite_port.py /Users/gufran/Developer/Projects/Misc/disability_cslr/education/vite.config.js 5301)",
+      "Bash(python3 /tmp/vite_port.py /Users/gufran/Developer/Projects/Misc/disability_cslr/medical/vite.config.js 5302)",
+      "Bash(python3 /tmp/vite_port.py /Users/gufran/Developer/Projects/Misc/disability_cslr/children/vite.config.js 5303)",
+      "Bash(python3 /tmp/vite_port.py /Users/gufran/Developer/Projects/Misc/disability_cslr/public-safety/vite.config.js 5304)",
+      "Bash(lsof -ti:5300 -sTCP:LISTEN)",
+      "Bash(~/.claude/skills/here-now/scripts/publish.sh dist *)",
+      "Bash(node gen-icons.mjs)",
+      "Bash(curl -s http://localhost:5300/)",
+      "Bash(curl -s http://localhost:5300/src/main.jsx)",
+      "Bash(curl -s http://localhost:5300/manifest.webmanifest)",
+      "Bash(node -e \"try{require\\('puppeteer'\\);console.log\\('puppeteer yes'\\)}catch{console.log\\('no puppeteer'\\)}\")",
+      "Bash(pkill -f edge-shots)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(rm -f /tmp/smoke*.mjs /tmp/full.mjs /tmp/shots.mjs /tmp/inspect.mjs /tmp/gen-icons.mjs /tmp/sw-dev.log)",
+      "Bash(rm -rf /tmp/edge-smoke* /tmp/edge-insp /tmp/edge-full /tmp/edge-shots /tmp/edge-smoke-bk /tmp/edge-smoke-2 /tmp/edge-smoke-3)",
+      "Bash(echo \"pid $!\")",
+      "Bash(lsof -ti:5300)",
+      "Bash(curl -s http://localhost:5300/src/App.css)",
+      "Bash(pkill -f \"sw-dev\")",
+      "Bash(wait)",
+      "Bash(pkill -f edge-sm-light)",
+      "Bash(pkill -f edge-doc)",
+      "Bash(xargs kill)",
+      "Bash(node -e \"import\\('./src/content.js'\\).then\\(m=>console.log\\('ok:',Object.keys\\(m\\).join\\(', '\\)\\)\\).catch\\(e=>{console.error\\(e.message\\);process.exit\\(1\\)}\\)\")",
+      "Bash(lsof -ti:5200)",
+      "Bash(pkill -f edge-ws2)",
+      "Bash(node /tmp/q.mjs)",
+      "Bash(pkill -f \"edge-\")",
+      "Bash(curl -s http://localhost:5200/legacy/education/)"
+    ]
+  }
+}

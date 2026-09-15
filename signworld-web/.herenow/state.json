@@ -1,0 +1,10 @@
+{
+  "publishes": {
+    "hazy-igloo-nhc3": {
+      "siteUrl": "https://hazy-igloo-nhc3.here.now/"
+    },
+    "centered-yacht-cb3f": {
+      "siteUrl": "https://centered-yacht-cb3f.here.now/"
+    }
+  }
+}

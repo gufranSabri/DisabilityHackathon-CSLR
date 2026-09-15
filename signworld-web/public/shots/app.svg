@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 560" font-family="Manrope, sans-serif">
+  <rect x="8" y="8" width="264" height="544" rx="36" fill="#0b3d26"/>
+  <rect x="18" y="18" width="244" height="524" rx="28" fill="#f4f6f8"/>
+  <rect x="104" y="30" width="72" height="10" rx="5" fill="#0b3d26"/>
+  <text x="40" y="86" fill="#16241d" font-size="18" font-weight="800">مساءَ الخير</text>
+  <rect x="40" y="104" width="200" height="72" rx="16" fill="#0b7a4b"/>
+  <text x="150" y="148" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">ترجم الآن</text>
+  <g>
+    <rect x="40" y="192" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+    <rect x="110" y="192" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+    <rect x="180" y="192" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+    <rect x="40" y="262" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+    <rect x="110" y="262" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+    <rect x="180" y="262" width="60" height="60" rx="14" fill="#fff" stroke="#e4e8ec"/>
+  </g>
+  <rect x="40" y="342" width="200" height="120" rx="16" fill="#fff" stroke="#e4e8ec"/>
+  <rect x="24" y="500" width="232" height="44" rx="20" fill="#fff" stroke="#e4e8ec"/>
+  <circle cx="140" cy="500" r="24" fill="#0b7a4b"/>
+</svg>

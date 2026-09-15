@@ -1,0 +1,13 @@
+# Terminal 1: Start backend
+cd /Users/gufran/Developer/Projects/Misc/disability_cslr/backend
+source venv/bin/activate
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2: Start frontend
+cd /Users/gufran/Developer/Projects/Misc/disability_cslr/signworld-app
+npm run dev
+# Open http://localhost:5300 in your browser
+
+
+
+سوال هو

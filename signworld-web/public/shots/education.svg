@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Manrope, sans-serif">
+  <rect width="640" height="400" fill="#f4f6f8"/>
+  <rect width="640" height="64" fill="#b9852a"/>
+  <circle cx="34" cy="32" r="12" fill="#fff" opacity="0.9"/>
+  <text x="58" y="38" fill="#fff" font-size="16" font-weight="800">Education</text>
+  <rect x="32" y="96" width="360" height="20" rx="6" fill="#dfe4e8"/>
+  <rect x="32" y="128" width="260" height="14" rx="5" fill="#e8ecef"/>
+  <rect x="32" y="168" width="576" height="150" rx="14" fill="#fff" stroke="#e4e8ec"/>
+  <circle cx="120" cy="243" r="34" fill="#b9852a" opacity="0.14"/>
+  <path d="M120 225c-9 0-15 7-15 17v18c0 4 3 6 7 6h16c4 0 7-2 7-6v-18c0-10-6-17-15-17Z" fill="#b9852a"/>
+  <circle cx="120" cy="216" r="9" fill="#b9852a"/>
+  <rect x="180" y="210" width="380" height="16" rx="5" fill="#e8ecef"/>
+  <rect x="180" y="238" width="320" height="12" rx="4" fill="#eef1f3"/>
+  <rect x="180" y="262" width="360" height="12" rx="4" fill="#eef1f3"/>
+  <text x="32" y="360" fill="#8a978f" font-size="13">Teacher speaks - avatar signs live</text>
+</svg>

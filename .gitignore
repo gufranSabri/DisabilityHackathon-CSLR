@@ -1,0 +1,5 @@
+models/
+backend/models/
+signworld-app/node_modules/
+signworld-web/node_modules/
+backend/venv/
