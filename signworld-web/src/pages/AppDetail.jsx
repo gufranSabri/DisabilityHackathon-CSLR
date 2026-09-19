@@ -3,7 +3,12 @@ import { motion } from 'framer-motion'
 import Icon from '../Icons'
 import { useL } from '../useLangCtx'
 import { Section } from '../components/Section'
+import Avatar3D from '../components/Avatar3D'
+import { signsFor } from '../lib/signs'
 import { APPS, MOMENTS } from '../content'
+
+// each flagship app signs clips from its own domain
+const APP_TOPIC = { education: 'education', medical: 'medical', children: 'kids', publicSafety: 'emergency' }
 
 export default function AppDetail() {
   const { id } = useParams()
@@ -31,8 +36,19 @@ export default function AppDetail() {
       </section>
 
       <Section>
-        <div className="detail-preview" style={{ '--accent': app.accent }}>
-          <img src={`/shots/${app.id}.svg`} alt={app.name[lang]} />
+        <div className="detail-split">
+          <div className="detail-preview" style={{ '--accent': app.accent }}>
+            <img src={`/shots/${app.id}.svg`} alt={app.name[lang]} />
+          </div>
+          <div className="detail-avatar" style={{ '--accent': app.accent }}>
+            <Avatar3D
+              signId={signsFor(APP_TOPIC[app.id])}
+              lang={lang}
+              caption={app.tagline[lang]}
+              accent={app.accent}
+              badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
+            />
+          </div>
         </div>
         <blockquote className="impact-quote">
           <Icon name="quote" size={22} />

@@ -3,10 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Icon from './Icons'
 import { SaduField, Divider } from './Ornaments'
 import SignWorldMark from './SignWorldMark'
-import AvatarStage from './AvatarStage'
+import Avatar3D from './Avatar3D'
 import Confetti from './Confetti'
 import useLang from './useLang'
 import { CONTENT, APP_NAME, MASCOTS, getCategories, getLessonWords } from './content'
+import { signsFor, signsForText } from './signs'
+
+const LOCAL = {
+  ar: { hi: 'مرحبًا يا صديقي!', cheer: 'أحسنت يا بطل! شكرًا لك!' },
+  en: { hi: 'Hi, friend!', cheer: 'Great job, champ! Thank you!' },
+}
 import './App.css'
 
 const fade = {
@@ -180,7 +186,7 @@ function Home({ t, lang, mascot, profile, onToggleLang, onPick, onChangeMascot }
         style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer' }}
         aria-label={t.changeMascot}
       >
-        <AvatarStage signing={false} idleLabel={t.mascotIdle} accent={mascot.accent} emoji={mascot.emoji} />
+        <Avatar3D signId={['00_0253', '00_0233']} lang={lang} caption={LOCAL[lang].hi} accent={mascot.accent} badgeLive={lang === 'ar' ? 'مرحبًا!' : 'Hello!'} />
       </motion.button>
 
       <motion.p className="home__eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.6 }}>
@@ -271,20 +277,14 @@ function Categories({ t, lang, onNav, onPickCategory }) {
 function Lesson({ t, lang, category, mascot, onNav }) {
   const words = useMemo(() => getLessonWords(category, lang), [category, lang])
   const [idx, setIdx] = useState(0)
-  const [signing, setSigning] = useState(false)
+  const [replayKey, setReplayKey] = useState(0)
   const word = words[idx]
 
-  useEffect(() => {
-    setSigning(true)
-    const timer = setTimeout(() => setSigning(false), 2000)
-    return () => clearTimeout(timer)
-  }, [idx])
+  // best-matching dataset clip for the word (cat → "Where is the cat?"); words the
+  // dataset has no sign for get a stable everyday clip instead
+  const wordSigns = useMemo(() => signsForText(word.en, 'kids'), [word.en])
 
-  const play = () => {
-    setSigning(false)
-    requestAnimationFrame(() => setSigning(true))
-    setTimeout(() => setSigning(false), 2000)
-  }
+  const play = () => setReplayKey((k) => k + 1)
 
   const isLast = idx === words.length - 1
 
@@ -316,7 +316,7 @@ function Lesson({ t, lang, category, mascot, onNav }) {
       </div>
 
       <section className="panel">
-        <AvatarStage signing={signing} caption={word.caption} accent={mascot.accent} emoji={mascot.emoji} />
+        <Avatar3D signId={wordSigns} lang={lang} caption={word.caption} accent={mascot.accent} replayKey={replayKey} badgeLive={lang === 'ar' ? 'يُشير الآن' : 'Signing now'} />
       </section>
 
       <AnimatePresence mode="wait">
@@ -334,9 +334,9 @@ function Lesson({ t, lang, category, mascot, onNav }) {
         </motion.div>
       </AnimatePresence>
 
-      <motion.button className="lesson__replay" onClick={play} disabled={signing} whileTap={{ scale: 0.92 }}>
+      <motion.button className="lesson__replay" onClick={play} whileTap={{ scale: 0.92 }}>
         <Icon name="play" size={15} />
-        {signing ? t.playing : t.replay}
+        {t.replay}
       </motion.button>
 
       <div className="lesson__nav">
@@ -449,6 +449,15 @@ function Game({ t, lang, mascot, onNav }) {
             exit={{ opacity: 0, x: lang === 'ar' ? 18 : -18 }}
             transition={{ duration: 0.35 }}
           >
+            <Avatar3D
+              signId={signsForText(item.answer, 'kids')}
+              lang={lang}
+              caption=""
+              compact
+              accent={mascot.accent}
+              badgeLive={t.promptLabel}
+            />
+
             <div className="game__prompt">
               <p className="game__prompt-label">{t.promptLabel}</p>
               <motion.span
@@ -547,6 +556,8 @@ function Progress({ t, lang, onNav }) {
           <div className="streak-card__label">{t.streakLabel}</div>
         </div>
       </motion.div>
+
+      <Avatar3D signId={['00_0251', '00_0233']} lang={lang} caption={LOCAL[lang].cheer} compact badgeLive={lang === 'ar' ? 'أحسنت!' : 'Well done!'} />
 
       <p className="panel__label">{t.badgesLabel}</p>
       <div className="badge-grid">

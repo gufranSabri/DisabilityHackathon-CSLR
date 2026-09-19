@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Icon from './Icons'
 import { SaduField, Divider } from './Ornaments'
 import SignWorldMark from './SignWorldMark'
-import AvatarStage from './AvatarStage'
+import Avatar3D from './Avatar3D'
 import CameraCapture from './CameraCapture'
 import IncidentMap from './IncidentMap'
 import useLang from './useLang'
 import { CONTENT, APP_NAME } from './content'
+import { signsFor, signsForText } from './signs'
 import './App.css'
 
 const fade = {
@@ -15,6 +16,15 @@ const fade = {
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -14 },
   transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+}
+
+// clips aligned 1:1 with t.live.captions and t.broadcast.captions (caption n ↔ clip n)
+const LIVE_SIGNS = ['00_0182', '00_0184', '00_0202', '00_0185']
+const BROADCAST_SIGNS = ['00_0201', '00_0205', '00_0184', '00_0185']
+
+const LOCAL = {
+  ar: { homeCaption: 'المساعدة على بُعد نقرة واحدة — سأوقّع لك كل ما يقوله المركز.', backToScript: 'العودة إلى الإرشادات', signedAlert: 'التنبيه بلغة الإشارة' },
+  en: { homeCaption: 'Help is one tap away — I will sign everything the dispatcher says.', backToScript: 'Back to the guidance script', signedAlert: 'Signed alert' },
 }
 
 export default function App() {
@@ -61,7 +71,7 @@ export default function App() {
 
       <AnimatePresence>
         {detail && (
-          <IncidentDetail item={detail} t={t.incidentDetail} onClose={() => setDetail(null)} />
+          <IncidentDetail item={detail} t={t.incidentDetail} lang={lang} onClose={() => setDetail(null)} />
         )}
       </AnimatePresence>
 
@@ -95,6 +105,8 @@ function Home({ t, lang, onToggleLang, onStart }) {
       <motion.p className="home__sub" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.7 }}>
         {t.subtitle}
       </motion.p>
+
+      <Avatar3D signId={signsFor('emergency')} lang={lang} caption={LOCAL[lang].homeCaption} compact accent="var(--amber-soft)" badgeLive={lang === 'ar' ? 'إرشادات' : 'Guidance'} />
 
       <motion.div className="home__cta" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
         <button className="callbtn" onClick={onStart}>
@@ -168,8 +180,8 @@ function IncidentPicker({ t, lang, selected, onSelect, onNav }) {
 /* ------------------------------- live ------------------------------- */
 
 function Live({ t, lang, onNav }) {
-  const [captionIdx, setCaptionIdx] = useState(0)
-  const [signing, setSigning] = useState(true)
+  const [message, setMessage] = useState(null)        // dispatcher reply the avatar is signing
+  const [draft, setDraft] = useState('')
   const [asking, setAsking] = useState(false)
   const [callerDone, setCallerDone] = useState(false)
   const [seconds, setSeconds] = useState(42)
@@ -180,15 +192,12 @@ function Live({ t, lang, onNav }) {
     return () => clearInterval(tick)
   }, [])
 
-  useEffect(() => {
-    if (asking) return
-    setSigning(true)
-    const t1 = setTimeout(() => setSigning(false), 1800)
-    const t2 = setTimeout(() => {
-      setCaptionIdx((i) => (i + 1) % t.captions.length)
-    }, 3400)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [captionIdx, asking, t.captions.length])
+  const say = (text) => {
+    const v = text.trim()
+    if (!v) return
+    setMessage({ text: v, ids: signsForText(v, 'emergency') })
+    setDraft('')
+  }
 
   const mm = String(Math.floor(seconds / 60)).padStart(2, '0')
   const ss = String(seconds % 60).padStart(2, '0')
@@ -227,23 +236,37 @@ function Live({ t, lang, onNav }) {
         <p className="panel__label">
           <Icon name="avatar" size={13} /> {t.dispatchLabel}
         </p>
-        <AvatarStage signing={!asking && signing} caption={!asking ? t.captions[captionIdx] : ''} />
+        <Avatar3D
+          signId={message ? message.ids : LIVE_SIGNS}
+          lang={lang}
+          caption={message ? message.text : t.captions}
+          badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
+        />
+        {message && (
+          <button className="chip chip--tap" onClick={() => setMessage(null)}>{LOCAL[lang].backToScript}</button>
+        )}
       </section>
 
       <div className="quickreplies">
         {t.quickReplies.map((q, i) => (
-          <button key={i} className="chip chip--tap" onClick={() => setCaptionIdx(i % t.captions.length)}>
+          <button key={i} className="chip chip--tap" onClick={() => say(q)}>
             {q}
           </button>
         ))}
       </div>
 
-      <div className="field field--input">
-        <input className="field__input" type="text" placeholder={t.inputPlaceholder} readOnly />
-        <button className="iconbtn iconbtn--accent" aria-label={t.sendBtn}>
+      <form className="field field--input" onSubmit={(e) => { e.preventDefault(); say(draft) }}>
+        <input
+          className="field__input"
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder={t.inputPlaceholder}
+        />
+        <button type="submit" className="iconbtn iconbtn--accent" aria-label={t.sendBtn}>
           <Icon name="send" size={17} />
         </button>
-      </div>
+      </form>
 
       <div className="live__actions">
         <button
@@ -334,19 +357,7 @@ function Dispatch({ t, onNav }) {
 /* ----------------------------- broadcast ----------------------------- */
 
 function Broadcast({ t, lang, onNav }) {
-  const [captionIdx, setCaptionIdx] = useState(0)
-  const [signing, setSigning] = useState(true)
   const [paused, setPaused] = useState(false)
-
-  useEffect(() => {
-    if (paused) return
-    setSigning(true)
-    const t1 = setTimeout(() => setSigning(false), 1800)
-    const t2 = setTimeout(() => {
-      setCaptionIdx((i) => (i + 1) % t.captions.length)
-    }, 3800)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [captionIdx, paused, t.captions.length])
 
   return (
     <motion.main className="screen broadcast" {...fade}>
@@ -370,12 +381,12 @@ function Broadcast({ t, lang, onNav }) {
         <p className="panel__label">
           <Icon name="avatar" size={13} /> {t.captionLabel}
         </p>
-        <AvatarStage signing={!paused && signing} caption={t.captions[captionIdx]} accent="var(--amber-soft)" />
+        <Avatar3D signId={BROADCAST_SIGNS} lang={lang} caption={t.captions} paused={paused} accent="var(--amber-soft)" badgeLive={lang === 'ar' ? 'بثّ مباشر' : 'Live broadcast'} />
       </section>
 
       <div className="broadcast__captionlist">
         {t.captions.map((c, i) => (
-          <p key={i} className={`broadcast__line ${i === captionIdx ? 'is-active' : ''}`}>
+          <p key={i} className="broadcast__line">
             {c}
           </p>
         ))}
@@ -432,7 +443,7 @@ function Status({ t, onNav, onOpenDetail }) {
 
 /* ------------------------------- incident detail sheet ------------------------------- */
 
-function IncidentDetail({ item, t, onClose }) {
+function IncidentDetail({ item, t, lang, onClose }) {
   return (
     <motion.div className="incident-detail" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
       <motion.div
@@ -454,6 +465,11 @@ function IncidentDetail({ item, t, onClose }) {
         <div className="incident-detail__section">
           <p className="incident-detail__label">{item.kind}</p>
           <span className={`status-chip status-chip--${item.status}`}>{t.statusLabel[item.status]}</span>
+        </div>
+
+        <div className="incident-detail__section">
+          <p className="incident-detail__label">{LOCAL[lang].signedAlert}</p>
+          <Avatar3D signId={signsForText(`${item.kind}. ${item.transcript}`, 'emergency')} lang={lang} caption={item.transcript} compact accent="var(--amber-soft)" badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'} />
         </div>
 
         <div className="incident-detail__section">

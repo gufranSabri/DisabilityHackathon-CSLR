@@ -376,7 +376,7 @@ body {
   background: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
   pointer-events: none;
 }
-.avatar-stage__figure { width: 98px; height: 126px; position: relative; }
+.avatar-stage__figure { width: 176px; height: 224px; position: relative; }
 .avatar-stage__badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 10px;
@@ -744,3 +744,6 @@ body {
 /* ============================ motes (unused in this theme) ============================ */
 .motes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .motes span { display: none; }
+
+.avatar-stage--compact { padding-top: 10px; padding-bottom: 10px; }
+.avatar-stage--compact .avatar-stage__figure { width: 132px; height: 168px; }

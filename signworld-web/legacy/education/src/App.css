@@ -342,7 +342,7 @@ body {
   background: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
   pointer-events: none;
 }
-.avatar-stage__figure { width: 108px; height: 140px; position: relative; }
+.avatar-stage__figure { width: 176px; height: 224px; position: relative; }
 .avatar-stage__badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 11px;
@@ -700,3 +700,9 @@ body {
   15% { opacity: 0.6; }
   100% { transform: translateY(-140px); opacity: 0; }
 }
+
+.chip--tap { cursor: pointer; font: inherit; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.chip--tap:hover { border-color: color-mix(in srgb, var(--accent, currentColor) 45%, transparent); }
+
+.avatar-stage--compact { padding-top: 10px; padding-bottom: 10px; }
+.avatar-stage--compact .avatar-stage__figure { width: 132px; height: 168px; }

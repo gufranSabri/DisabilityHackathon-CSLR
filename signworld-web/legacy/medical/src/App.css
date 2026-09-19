@@ -335,7 +335,7 @@ body {
   background: radial-gradient(60% 60% at 50% 40%, rgba(53, 240, 168, 0.1), transparent 70%);
   pointer-events: none;
 }
-.avatar-stage__figure { width: 100px; height: 128px; position: relative; }
+.avatar-stage__figure { width: 176px; height: 224px; position: relative; }
 .avatar-stage__badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 10px;
@@ -801,3 +801,9 @@ body {
 /* ============================ motes (reused ornament, unused in this theme) ============================ */
 .motes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .motes span { display: none; }
+
+.chip--tap { cursor: pointer; font: inherit; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.chip--tap:hover { border-color: color-mix(in srgb, var(--accent, currentColor) 45%, transparent); }
+
+.avatar-stage--compact { padding-top: 10px; padding-bottom: 10px; }
+.avatar-stage--compact .avatar-stage__figure { width: 132px; height: 168px; }

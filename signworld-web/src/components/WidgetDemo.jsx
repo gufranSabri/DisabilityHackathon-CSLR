@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Icon from '../Icons'
 import CameraCapture from './CameraCapture'
-import AvatarStage from './AvatarStage'
+import Avatar3D from './Avatar3D'
 import { useL } from '../useLangCtx'
 import { WIDGET } from '../content'
+import { signsForText } from '../lib/signs'
 
 function speak(text, lang) {
   try {
@@ -62,7 +63,9 @@ function Sign2Text({ lang, w, wd }) {
         active={rec}
         lines={script}
         onLine={(l) => setLines((p) => [...p, l])}
+        onStop={() => setRec(false)}
         onComplete={() => setRec(false)}
+        processingLabel={wd.reading}
         facingMode="user"
         label={rec ? wd.reading : 'SignWorld'}
         deniedLabel={wd.cameraDenied}
@@ -86,26 +89,29 @@ function Sign2Text({ lang, w, wd }) {
 }
 
 function Text2Sign({ lang, w }) {
-  const [text, setText] = useState('')
-  const [signing, setSigning] = useState(false)
-  const timer = useRef(null)
   const phrases = WIDGET.phrases[lang]
+  const [text, setText] = useState('')
+  // the avatar is never idle: it starts on the first sample phrase
+  const [spoken, setSpoken] = useState(() => ({ text: phrases[0], ids: signsForText(phrases[0], 'greeting') }))
+
+  // keep the sample phrase in the UI language when it is still the default
+  useEffect(() => {
+    setSpoken((s) => (WIDGET.phrases.ar.includes(s.text) || WIDGET.phrases.en.includes(s.text))
+      ? { text: phrases[0], ids: s.ids } : s)
+  }, [lang])
 
   const run = (v) => {
     const val = (v ?? text).trim()
     if (!val) return
-    setSigning(true)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setSigning(false), 3200)
+    setSpoken({ text: val, ids: signsForText(val, 'greeting') })
   }
-  useEffect(() => () => clearTimeout(timer.current), [])
 
   return (
     <div className="wdemo__pane">
-      <AvatarStage
-        signing={signing}
-        caption={signing ? text : ''}
-        badgeIdle={lang === 'ar' ? 'جاهز' : 'Idle'}
+      <Avatar3D
+        signId={spoken.ids}
+        lang={lang}
+        caption={spoken.text}
         badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
       />
       <textarea

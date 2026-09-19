@@ -1,8 +1,9 @@
 import Icon from '../Icons'
 import { useL } from '../useLangCtx'
 import { Section } from '../components/Section'
-import AvatarStage from '../components/AvatarStage'
+import Avatar3D from '../components/Avatar3D'
 import { APP_PWA_URL } from '../content'
+import { signsFor } from '../lib/signs'
 
 export default function Emergency() {
   const { lang, t } = useL()
@@ -33,11 +34,11 @@ export default function Emergency() {
 
           <div className="em-panel">
             <h2>{e.waitTitle}</h2>
-            <AvatarStage
-              signing
+            <Avatar3D
+              signId={signsFor('emergency')}
+              lang={lang}
               caption={e.wait}
               compact
-              badgeIdle={lang === 'ar' ? 'جاهز' : 'Idle'}
               badgeLive={lang === 'ar' ? 'إرشادات' : 'Guidance'}
             />
           </div>

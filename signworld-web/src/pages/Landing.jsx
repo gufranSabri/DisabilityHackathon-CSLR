@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Icon from '../Icons'
@@ -7,19 +6,15 @@ import { Section, SectionHead } from '../components/Section'
 import AppCard from '../components/AppCard'
 import StatBar from '../components/StatBar'
 import WidgetDemo from '../components/WidgetDemo'
-import AvatarStage from '../components/AvatarStage'
+import Avatar3D from '../components/Avatar3D'
 import { APPS, BRAIN, MOMENTS, APP_PWA_URL } from '../content'
 
-const HERO_PHRASES = {
-  ar: ['أهلًا بك', 'كيف أساعدك؟', 'لغة الإشارة السعودية', 'للجميع'],
-  en: ['Welcome', 'How can I help?', 'Saudi Sign Language', 'for everyone'],
-}
+const WELCOME = { ar: 'أهلًا بك!', en: 'Welcome!' }
 
 export default function Landing() {
   const { lang, dir, t } = useL()
   const L = t.landing
   const arrow = dir === 'rtl' ? 'arrowLeft' : 'arrowRight'
-  const [phrase, setPhrase] = usePhrase(HERO_PHRASES[lang])
 
   return (
     <>
@@ -42,10 +37,10 @@ export default function Landing() {
             </motion.div>
           </div>
           <motion.div className="hero__visual" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2, duration: 0.7 }}>
-            <AvatarStage
-              signing
-              caption={phrase}
-              badgeIdle={lang === 'ar' ? 'جاهز' : 'Idle'}
+            <Avatar3D
+              signId="00_0253"
+              lang={lang}
+              caption={WELCOME[lang]}
               badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
             />
           </motion.div>
@@ -125,13 +120,4 @@ export default function Landing() {
       </Section>
     </>
   )
-}
-
-function usePhrase(list) {
-  const [i, setI] = useState(0)
-  useEffect(() => {
-    const id = setInterval(() => setI((x) => (x + 1) % list.length), 2800)
-    return () => clearInterval(id)
-  }, [list.length])
-  return [list[i], setI]
 }

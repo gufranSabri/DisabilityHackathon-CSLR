@@ -690,13 +690,13 @@ fieldset.fld { border: none; padding: 0; margin: 0; }
   min-height: 200px; justify-content: center;
 }
 .avatar-stage--compact { min-height: 150px; padding: 18px; }
-.avatar-stage--compact .avatar-stage__figure { width: 90px; height: 116px; }
+.avatar-stage--compact .avatar-stage__figure { width: 150px; height: 190px; }
 .avatar-stage__ring {
   position: absolute; inset: 16px; border-radius: 12px;
   background: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--brand) 10%, transparent), transparent 70%);
   pointer-events: none;
 }
-.avatar-stage__figure { width: 118px; height: 152px; position: relative; --accent: var(--brand); }
+.avatar-stage__figure { width: 200px; height: 250px; position: relative; --accent: var(--brand); }
 .avatar-stage__badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 11px; padding: 5px 12px; border-radius: 100px;
@@ -802,3 +802,32 @@ fieldset.fld { border: none; padding: 0; margin: 0; }
 }
 .appframe__iframe { flex: 1; width: 100%; border: none; background: #fff; }
 @media (max-width: 640px) { .appframe__note { display: none; } }
+
+.camera__timer {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  padding: 3px 11px; border-radius: 999px; background: rgba(0, 0, 0, 0.5);
+  color: #fff; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+.camera__progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.22); }
+.camera__progress i { display: block; height: 100%; background: var(--coral); transition: width 0.1s linear; }
+.camera__processing {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: rgba(10, 20, 16, 0.55); color: #fff; font-size: 12.5px;
+}
+.camera__spinner {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.3); border-top-color: #fff;
+  animation: sw-spin 0.8s linear infinite;
+}
+@keyframes sw-spin { to { transform: rotate(360deg); } }
+
+/* app detail + directory moment: avatar beside the content */
+.detail-split { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 24px; align-items: start; margin-bottom: 32px; }
+.detail-split .detail-preview { margin-bottom: 0; }
+.detail-avatar, .moment-avatar { position: sticky; top: 90px; }
+.moment-layout { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 860px) {
+  .detail-split, .moment-layout { grid-template-columns: 1fr; }
+  .detail-avatar, .moment-avatar { position: static; }
+}

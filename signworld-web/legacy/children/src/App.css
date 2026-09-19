@@ -114,8 +114,8 @@ body {
   border-radius: 30px;
 }
 .home__mascot .avatar-stage__figure {
-  width: 92px;
-  height: 118px;
+  width: 150px;
+  height: 190px;
 }
 .home__mascot .avatar-stage__ring { inset: 8px; }
 
@@ -271,7 +271,7 @@ body {
   background: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
   pointer-events: none;
 }
-.avatar-stage__figure { width: 112px; height: 144px; position: relative; }
+.avatar-stage__figure { width: 176px; height: 224px; position: relative; }
 .avatar-stage__face {
   position: absolute;
   top: 30px;
@@ -884,3 +884,9 @@ body {
   15% { opacity: 0.6; }
   100% { transform: translateY(-140px); opacity: 0; }
 }
+
+.chip--tap { cursor: pointer; font: inherit; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.chip--tap:hover { border-color: color-mix(in srgb, var(--accent, currentColor) 45%, transparent); }
+
+.avatar-stage--compact { padding-top: 10px; padding-bottom: 10px; }
+.avatar-stage--compact .avatar-stage__figure { width: 132px; height: 168px; }

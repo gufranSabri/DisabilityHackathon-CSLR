@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Icon from './Icons'
 import { SaduField, Divider, ChalkDust } from './Ornaments'
 import SignWorldMark from './SignWorldMark'
-import AvatarStage from './AvatarStage'
+import Avatar3D from './Avatar3D'
 import CameraCapture from './CameraCapture'
 import useLang from './useLang'
 import { CONTENT, APP_NAME } from './content'
+import { signsFor, signsForText } from './signs'
 import './App.css'
 
 const fade = {
@@ -15,6 +16,15 @@ const fade = {
   exit: { opacity: 0, y: -14 },
   transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
 }
+
+// clips aligned 1:1 with t.session.captions (caption n ↔ clip n)
+const LESSON_SIGNS = ['00_0100', '00_0108', '00_0103', '00_0077']
+
+const LOCAL = {
+  ar: { teacherHi: 'صباح الخير! جاهزون لحصة اليوم؟', studentHi: 'صباح الخير! اختر درسك واقرأ في المكتبة.', welcome: 'أهلًا بك في الحصة!', backToLesson: 'العودة إلى الدرس', answering: 'الإجابة على', preview: 'معاينة الرمز الرقمي' },
+  en: { teacherHi: 'Good morning! Ready for today’s class?', studentHi: 'Good morning! Pick a lesson from the library.', welcome: 'Welcome to class!', backToLesson: 'Back to the lesson', answering: 'Answering', preview: 'Avatar preview' },
+}
+const STYLE_ACCENTS = ['var(--copper-soft)', 'var(--teal-soft, #5fd0b8)', 'var(--cream)']
 
 export default function App() {
   const [role, setRole] = useState(null) // null | 'teacher' | 'student'
@@ -50,7 +60,7 @@ export default function App() {
           <Session key="session" t={t.session} lang={lang} role={role} onNav={setScreen} />
         )}
         {screen === 'library' && (
-          <Library key="library" t={t.library} onNav={setScreen} onHome={goHome} />
+          <Library key="library" t={t.library} lang={lang} onNav={setScreen} onHome={goHome} />
         )}
         {screen === 'analytics' && (
           <Analytics key="analytics" t={t.analytics} onNav={setScreen} />
@@ -84,6 +94,8 @@ function RolePicker({ t, lang, onToggleLang, onPick }) {
       <motion.p className="home__sub" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.7 }}>
         {t.subtitle}
       </motion.p>
+
+      <Avatar3D signId="00_0253" lang={lang} caption={LOCAL[lang].welcome} compact badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'} />
 
       <div className="home__choices">
         {[
@@ -136,6 +148,8 @@ function Dashboard({ t, lang, onNav, onHome }) {
         <span className="dash-greeting__sub">{t.sub}</span>
       </div>
 
+      <Avatar3D signId={['00_0253', '00_0100']} lang={lang} caption={LOCAL[lang].teacherHi} compact badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'} />
+
       <div className="stat-row">
         {t.stats.map((s, i) => (
           <motion.div
@@ -153,7 +167,6 @@ function Dashboard({ t, lang, onNav, onHome }) {
 
       <div className="section-label">
         <span className="section-label__title">{t.classesLabel}</span>
-        <span className="section-label__action">{t.seeAll}</span>
       </div>
 
       <div className="class-grid">
@@ -183,21 +196,15 @@ function Dashboard({ t, lang, onNav, onHome }) {
 /* ------------------------------- session (shared teacher/student) ------------------------------- */
 
 function Session({ t, lang, role, onNav }) {
-  const [captionIdx, setCaptionIdx] = useState(0)
-  const [signing, setSigning] = useState(true)
+  const [message, setMessage] = useState(null)   // a student's question the avatar is signing back
   const [asking, setAsking] = useState(false)
   const [studentDone, setStudentDone] = useState(false)
   const [agendaIdx, setAgendaIdx] = useState(1)
 
-  useEffect(() => {
-    if (asking) return
-    setSigning(true)
-    const t1 = setTimeout(() => setSigning(false), 1800)
-    const t2 = setTimeout(() => {
-      setCaptionIdx((i) => (i + 1) % t.captions.length)
-    }, 3400)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [captionIdx, asking, t.captions.length])
+  const answer = (q) => setMessage({
+    text: `${q.name}: ${q.text}`,
+    ids: signsForText(q.text, 'education'),
+  })
 
   const backTarget = role === 'teacher' ? 'dashboard' : 'library'
 
@@ -236,7 +243,15 @@ function Session({ t, lang, role, onNav }) {
         <p className="panel__label">
           <Icon name="mic" size={14} /> {t.teacherLabel}
         </p>
-        <AvatarStage signing={!asking && signing} caption={!asking ? t.captions[captionIdx] : ''} />
+        <Avatar3D
+          signId={message ? message.ids : LESSON_SIGNS}
+          lang={lang}
+          caption={message ? message.text : t.captions}
+          badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
+        />
+        {message && (
+          <button className="chip chip--tap" onClick={() => setMessage(null)}>{LOCAL[lang].backToLesson}</button>
+        )}
       </section>
 
       {role === 'teacher' && (
@@ -256,7 +271,7 @@ function Session({ t, lang, role, onNav }) {
                   <span className="qqueue__name">{q.name}</span>
                   <span className="qqueue__text">{q.text}</span>
                 </div>
-                <button className="qqueue__answer">{t.answerBtn}</button>
+                <button className="qqueue__answer" onClick={() => answer(q)}>{t.answerBtn}</button>
               </motion.div>
             ))}
           </div>
@@ -298,7 +313,7 @@ function Session({ t, lang, role, onNav }) {
 
 /* ------------------------------ student lesson library ------------------------------ */
 
-function Library({ t, onNav, onHome }) {
+function Library({ t, lang, onNav, onHome }) {
   const [tab, setTab] = useState('all')
   const [favs, setFavs] = useState(() => new Set(t.items.map((it, i) => (it.fav ? i : null)).filter((v) => v !== null)))
 
@@ -324,6 +339,8 @@ function Library({ t, onNav, onHome }) {
           <span className="live__subject">{t.sub}</span>
         </div>
       </header>
+
+      <Avatar3D signId={['00_0253', '00_0113']} lang={lang} caption={LOCAL[lang].studentHi} compact badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'} />
 
       <div className="segmented">
         <button className={`segmented__btn ${tab === 'all' ? 'is-on' : ''}`} onClick={() => setTab('all')}>{t.tabAll}</button>
@@ -424,6 +441,7 @@ function Analytics({ t, onNav }) {
 /* ------------------------------ settings ------------------------------ */
 
 function Settings({ t, lang, onToggleLang, onNav, onHome, switchLabel }) {
+  const [style, setStyle] = useState(0)
   return (
     <motion.main className="screen settings" {...fade}>
       <header className="journey__bar">
@@ -444,10 +462,12 @@ function Settings({ t, lang, onToggleLang, onNav, onHome, switchLabel }) {
         <span className="field__label"><Icon name="avatar" size={15} /> {t.avatarLabel}</span>
         <div className="chips">
           {t.avatars.map((a, i) => (
-            <span key={a} className={`chip ${i === 0 ? 'is-on' : ''}`}>{a}</span>
+            <button key={a} className={`chip chip--tap ${i === style ? 'is-on' : ''}`} onClick={() => setStyle(i)}>{a}</button>
           ))}
         </div>
       </div>
+
+      <Avatar3D signId={signsFor('education')} lang={lang} accent={STYLE_ACCENTS[style]} compact badgeLive={LOCAL[lang].preview} />
 
       <div className="field">
         <span className="field__label"><Icon name="settings" size={15} /> {t.langLabel}</span>

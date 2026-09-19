@@ -3,7 +3,11 @@ import Icon from '../Icons'
 import { useL } from '../useLangCtx'
 import { Section } from '../components/Section'
 import ToolCard from '../components/ToolCard'
+import Avatar3D from '../components/Avatar3D'
+import { signsFor } from '../lib/signs'
 import { MOMENTS, TOOLS } from '../content'
+
+const MOMENT_TOPIC = { school: 'education', hospital: 'medical', emergency: 'emergency', family: 'kids', employment: 'greeting' }
 
 export default function DirectoryMoment() {
   const { moment } = useParams()
@@ -32,8 +36,18 @@ export default function DirectoryMoment() {
       </section>
 
       <Section>
-        <div className="toolgrid">
-          {tools.map((tool, i) => <ToolCard key={tool.id} tool={tool} index={i} />)}
+        <div className="moment-layout">
+          <div className="moment-avatar">
+            <Avatar3D
+              signId={signsFor(MOMENT_TOPIC[m.id])}
+              lang={lang}
+              caption={m.body[lang]}
+              badgeLive={lang === 'ar' ? 'يُترجم' : 'Signing'}
+            />
+          </div>
+          <div className="toolgrid">
+            {tools.map((tool, i) => <ToolCard key={tool.id} tool={tool} index={i} />)}
+          </div>
         </div>
       </Section>
     </>
